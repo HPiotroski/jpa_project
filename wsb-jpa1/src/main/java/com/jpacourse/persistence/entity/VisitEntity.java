@@ -32,6 +32,13 @@ public class VisitEntity {
     @JoinColumn(name = "DOCTOR_ID", nullable = false)
     private DoctorEntity doctor;
 
+    /* ZWIĄZEK JEDNOKIERUNKOWY WIZYTA-PACJENT
+     * Pacjentem jest PatientEntity
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PATIENT_ID", nullable = false)
+    private PatientEntity patient;
+
     // GETTERY I SETTERY
 
     public Long getId() {
@@ -72,6 +79,14 @@ public class VisitEntity {
 
     public void setDoctor(DoctorEntity doctor) {
         this.doctor = doctor;
+    }
+
+    public PatientEntity getPatient() {
+        return patient;
+    }
+
+    public void setPatient(PatientEntity patient) {
+        this.patient = patient;
     }
 
 	    public LocalDate getVisitDate() {
