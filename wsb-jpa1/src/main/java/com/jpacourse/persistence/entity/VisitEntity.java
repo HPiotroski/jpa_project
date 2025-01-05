@@ -1,67 +1,81 @@
 package com.jpacourse.persistence.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import java.util.List;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "VISIT")
 public class VisitEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String description;
+    private String description;
 
-	@Column(nullable = false)
-	private LocalDateTime time;
+    @Column(nullable = false)
+    private LocalDateTime time;
 
-	/* ZWIĄZEK DWUKIERUNKOWY LECZENIE-WIZYTA
-	* Rodzicem jest MedicalTreatmentEntity
-	* Dzieckiem jest VisitEntity
-	* Relacja dwukierunkowa
-	*/
-	@OneToOne(mappedBy = "visit")
-	private MedicalTreatmentEntity medicalTreatment;
+    /* ZWIĄZEK DWUKIERUNKOWY WIZYTA-LECZENIE
+     * Rodzicem jest MedicalTreatmentEntity
+     * Dzieckiem jest VisitEntity
+     */
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MedicalTreatmentEntity> treatments;
 
-	//GETTERY I SETTERY RELACJI WIZYTA-LECZENIE
-    public MedicalTreatmentEntity getMedicalTreatment() {
-        return medicalTreatment;
+    /* ZWIĄZEK JEDNOKIERUNKOWY WIZYTA-LEKARZ
+     * Lekarzem jest DoctorEntity
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DOCTOR_ID", nullable = false)
+    private DoctorEntity doctor;
+
+    // GETTERY I SETTERY
+
+    public Long getId() {
+        return id;
     }
 
-    public void setMedicalTreatment(MedicalTreatmentEntity medicalTreatment) {
-        this.medicalTreatment = medicalTreatment;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-	public Long getId() {
-		return id;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public LocalDateTime getTime() {
+        return time;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
 
-	public LocalDateTime getTime() {
-		return time;
-	}
+    public List<MedicalTreatmentEntity> getTreatments() {
+        return treatments;
+    }
 
-	public void setTime(LocalDateTime time) {
-		this.time = time;
-	}
+    public void setTreatments(List<MedicalTreatmentEntity> treatments) {
+        this.treatments = treatments;
+    }
+
+    public DoctorEntity getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(DoctorEntity doctor) {
+        this.doctor = doctor;
+    }
+
+	    public LocalDate getVisitDate() {
+        return time != null ? time.toLocalDate() : null;
+    }
 
 }
